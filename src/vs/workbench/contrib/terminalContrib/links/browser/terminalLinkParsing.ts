@@ -374,11 +374,21 @@ function detectPathsNoSuffix(line: string, os: OperatingSystem): IParsedLink[] {
 			// +++ w/foo/bar
 			// --- c/foo/bar
 			// +++ i/foo/bar
+			// | --- a/foo/bar
+			// | +++ b/foo/bar
+			// |   --- a/foo/bar
+			// |   +++ b/foo/bar
 			(gitDiffLine.test(line) && ((index - 4) % 2) === 0) ||
 			// diff --git a/foo/bar b/foo/bar
 			// diff --git i/foo/bar w/foo/baz
 			// diff --git c/foo/bar i/foo/baz
-			(line.startsWith('diff --git') && (text.startsWith('a/') || text.startsWith('b/') || text.startsWith('c/') || text.startsWith('i/') || text.startsWith('w/')))
+			// | diff --git a/foo/bar b/foo/baz
+			// |   diff --git a/foo/bar b/foo/baz
+			// | | diff --git a/foo/bar b/foo/baz
+			// | |   diff --git a/foo/bar b/foo/baz
+			// | | | | diff --git a/foo/bar b/foo/baz
+			// | | | |   diff --git a/foo/bar b/foo/baz
+			((line.startsWith('diff --git') || line.startsWith('| ') && line.indexOf('diff --git') > 0) && (text.startsWith('a/') || text.startsWith('b/') || text.startsWith('c/') || text.startsWith('i/') || text.startsWith('w/')))
 		) {
 			text = text.substring(2);
 			index += 2;

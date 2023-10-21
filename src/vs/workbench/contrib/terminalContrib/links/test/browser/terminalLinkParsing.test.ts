@@ -736,6 +736,332 @@ suite('TerminalLinkParsing', () => {
 					);
 				});
 			});
+			suite('inside git log --graph --patch output', () => {
+				suite('one level deep', () => {
+					test('| diff --git a/foo/bar b/foo/baz', () => {
+						deepStrictEqual(
+							detectLinks('| diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 15,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								},
+								{
+									path: {
+										index: 25,
+										text: 'foo/baz'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| --- a/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| --- a/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 8,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| +++ b/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| +++ b/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 8,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('|   diff --git a/foo/bar b/foo/baz', () => {
+						deepStrictEqual(
+							detectLinks('|   diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 17,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								},
+								{
+									path: {
+										index: 27,
+										text: 'foo/baz'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('|   --- a/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('|   --- a/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 10,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('|   +++ b/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('|   +++ b/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 10,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+				});
+				suite('two levels deep', () => {
+					test('| | diff --git a/foo/bar b/foo/baz', () => {
+						deepStrictEqual(
+							detectLinks('| | diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 17,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								},
+								{
+									path: {
+										index: 27,
+										text: 'foo/baz'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| | --- a/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| | --- a/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 10,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| | +++ b/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| | +++ b/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 10,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| |   diff --git a/foo/bar b/foo/baz', () => {
+						deepStrictEqual(
+							detectLinks('| |   diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 19,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								},
+								{
+									path: {
+										index: 29,
+										text: 'foo/baz'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| |   --- a/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| |   --- a/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 12,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| |   +++ b/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| |   +++ b/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 12,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+				});
+				suite('four levels deep', () => {
+					test('| | | | diff --git a/foo/bar b/foo/baz', () => {
+						deepStrictEqual(
+							detectLinks('| | | | diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 21,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								},
+								{
+									path: {
+										index: 31,
+										text: 'foo/baz'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| | | | --- a/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| | | | --- a/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 14,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| | | | +++ b/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| | | | +++ b/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 14,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| | | |   diff --git a/foo/bar b/foo/baz', () => {
+						deepStrictEqual(
+							detectLinks('| | | |   diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 23,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								},
+								{
+									path: {
+										index: 33,
+										text: 'foo/baz'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| | | |   --- a/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| | | |   --- a/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 16,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+					test('| | | |   +++ b/foo/bar', () => {
+						deepStrictEqual(
+							detectLinks('| | | |   +++ b/foo/bar', OperatingSystem.Linux),
+							[
+								{
+									path: {
+										index: 16,
+										text: 'foo/bar'
+									},
+									prefix: undefined,
+									suffix: undefined
+								}
+							] as IParsedLink[]
+						);
+					});
+				});
+			});
 		});
 
 		suite('should detect 3 suffix links on a single line', () => {
