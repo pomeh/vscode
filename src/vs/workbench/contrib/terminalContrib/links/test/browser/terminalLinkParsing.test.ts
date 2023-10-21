@@ -628,6 +628,114 @@ suite('TerminalLinkParsing', () => {
 					);
 				});
 			});
+			suite('mnemonicprefix git configuration', () => {
+				test('diff --git c/foo/bar i/foo/baz', () => {
+					deepStrictEqual(
+						detectLinks('diff --git c/foo/bar i/foo/baz', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 13,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							},
+							{
+								path: {
+									index: 23,
+									text: 'foo/baz'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+				test('--- i/foo/bar', () => {
+					deepStrictEqual(
+						detectLinks('--- i/foo/bar', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 6,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+				test('+++ w/foo/bar', () => {
+					deepStrictEqual(
+						detectLinks('+++ w/foo/bar', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 6,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+				test('diff --git i/foo/bar w/foo/baz', () => {
+					deepStrictEqual(
+						detectLinks('diff --git i/foo/bar w/foo/baz', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 13,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							},
+							{
+								path: {
+									index: 23,
+									text: 'foo/baz'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+				test('--- c/foo/bar', () => {
+					deepStrictEqual(
+						detectLinks('--- c/foo/bar', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 6,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+				test('+++ i/foo/bar', () => {
+					deepStrictEqual(
+						detectLinks('+++ i/foo/bar', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 6,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+			});
 		});
 
 		suite('should detect 3 suffix links on a single line', () => {
