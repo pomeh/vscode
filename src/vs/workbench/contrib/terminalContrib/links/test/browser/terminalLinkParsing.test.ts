@@ -573,58 +573,60 @@ suite('TerminalLinkParsing', () => {
 		});
 
 		suite('should detect file names in git diffs', () => {
-			test('--- a/foo/bar', () => {
-				deepStrictEqual(
-					detectLinks('--- a/foo/bar', OperatingSystem.Linux),
-					[
-						{
-							path: {
-								index: 6,
-								text: 'foo/bar'
+			suite('default git configuration', () => {
+				test('diff --git a/foo/bar b/foo/baz', () => {
+					deepStrictEqual(
+						detectLinks('diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 13,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
 							},
-							prefix: undefined,
-							suffix: undefined
-						}
-					] as IParsedLink[]
-				);
-			});
-			test('+++ b/foo/bar', () => {
-				deepStrictEqual(
-					detectLinks('+++ b/foo/bar', OperatingSystem.Linux),
-					[
-						{
-							path: {
-								index: 6,
-								text: 'foo/bar'
-							},
-							prefix: undefined,
-							suffix: undefined
-						}
-					] as IParsedLink[]
-				);
-			});
-			test('diff --git a/foo/bar b/foo/baz', () => {
-				deepStrictEqual(
-					detectLinks('diff --git a/foo/bar b/foo/baz', OperatingSystem.Linux),
-					[
-						{
-							path: {
-								index: 13,
-								text: 'foo/bar'
-							},
-							prefix: undefined,
-							suffix: undefined
-						},
-						{
-							path: {
-								index: 23,
-								text: 'foo/baz'
-							},
-							prefix: undefined,
-							suffix: undefined
-						}
-					] as IParsedLink[]
-				);
+							{
+								path: {
+									index: 23,
+									text: 'foo/baz'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+				test('--- a/foo/bar', () => {
+					deepStrictEqual(
+						detectLinks('--- a/foo/bar', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 6,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
+				test('+++ b/foo/bar', () => {
+					deepStrictEqual(
+						detectLinks('+++ b/foo/bar', OperatingSystem.Linux),
+						[
+							{
+								path: {
+									index: 6,
+									text: 'foo/bar'
+								},
+								prefix: undefined,
+								suffix: undefined
+							}
+						] as IParsedLink[]
+					);
+				});
 			});
 		});
 
