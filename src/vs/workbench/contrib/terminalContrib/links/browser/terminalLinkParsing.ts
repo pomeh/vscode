@@ -346,6 +346,12 @@ export const winDrivePrefix = '(?:\\\\\\\\\\?\\\\|file:\\/\\/\\/)?[a-zA-Z]:';
  */
 const winLocalLinkClause = '(?:(?:' + `(?:${winDrivePrefix}|${RegexPathConstants.WinOtherPathPrefix})` + '|(?:' + RegexPathConstants.WinExcludedStartPathCharactersClause + RegexPathConstants.WinExcludedPathCharactersClause + '*))?(?:' + RegexPathConstants.WinPathSeparatorClause + '(?:' + RegexPathConstants.WinExcludedPathCharactersClause + ')+)+)';
 
+/**
+ * A regex that matches git diff lines, such as `--- a/foo/bar`, `+++ b/foo/bar`, `--- i/foo/bar`,
+ * `+++ w/foo/bar`, `--- c/foo/bar` and `+++ i/foo/bar`
+ */
+const gitDiffLine = /(--- [aic]|\+\+\+ [bwi])\//;
+
 function detectPathsNoSuffix(line: string, os: OperatingSystem): IParsedLink[] {
 	const results: IParsedLink[] = [];
 
@@ -364,9 +370,15 @@ function detectPathsNoSuffix(line: string, os: OperatingSystem): IParsedLink[] {
 		if (
 			// --- a/foo/bar
 			// +++ b/foo/bar
-			((line.startsWith('--- a/') || line.startsWith('+++ b/')) && index === 4) ||
+			// --- i/foo/bar
+			// +++ w/foo/bar
+			// --- c/foo/bar
+			// +++ i/foo/bar
+			(gitDiffLine.test(line) && ((index - 4) % 2) === 0) ||
 			// diff --git a/foo/bar b/foo/bar
-			(line.startsWith('diff --git') && (text.startsWith('a/') || text.startsWith('b/')))
+			// diff --git i/foo/bar w/foo/baz
+			// diff --git c/foo/bar i/foo/baz
+			(line.startsWith('diff --git') && (text.startsWith('a/') || text.startsWith('b/') || text.startsWith('c/') || text.startsWith('i/') || text.startsWith('w/')))
 		) {
 			text = text.substring(2);
 			index += 2;
