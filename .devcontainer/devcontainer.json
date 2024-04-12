@@ -8,13 +8,8 @@
 	},
 
     "containerEnv": {
-        "DISPLAY": "${localEnv:DISPLAY}"
+        "DISPLAY": "" 
     },
-    "remoteEnv": {
-    },
-    "runArgs": [
-        "--volume=/tmp/.X11-unix:/tmp/.X11-unix"
-    ],
 
 	"overrideCommand": false,
 	"privileged": true,
@@ -23,8 +18,7 @@
 			"source": "vscode-dev",
 			"target": "/vscode-dev",
 			"type": "volume"
-		},
-		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
+		}
 	],
 	"postCreateCommand": "./.devcontainer/post-create.sh",
 	"customizations": {
