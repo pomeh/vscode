@@ -6,9 +6,17 @@
 	"features": {
 		"ghcr.io/devcontainers/features/desktop-lite:1": {}
 	},
-	"containerEnv": {
-		"DISPLAY": "" // Allow the Dev Containers extension to set DISPLAY, post-create.sh will add it back in ~/.bashrc and ~/.zshrc if not set.
-	},
+
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}"
+    },
+    "remoteEnv": {
+        "DOCKER_BUILDKIT": "0"
+    },
+    "runArgs": [
+        "--volume=/tmp/.X11-unix:/tmp/.X11-unix"
+    ],
+
 	"overrideCommand": false,
 	"privileged": true,
 	"mounts": [
@@ -16,7 +24,8 @@
 			"source": "vscode-dev",
 			"target": "/vscode-dev",
 			"type": "volume"
-		}
+		},
+		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
 	],
 	"postCreateCommand": "./.devcontainer/post-create.sh",
 	"customizations": {
